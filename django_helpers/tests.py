@@ -1,16 +1,13 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+from django_helpers.helpers.settings import set_default
 
-Replace this with more appropriate tests for your application.
-"""
+def test_set_default_returns_value_when_value_exists():
+    value = set_default('Ray','Charles')
+    assert value == 'Ray'
 
-from django.test import TestCase
+def test_set_default_returns_the_default_value_when_value_is_empty_string():
+    value = set_default("", 'Charles')
+    assert value =='Charles'
 
-
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+def test_set_default_returns_the_default_value_when_value_is_none():
+    value = set_default(None, 'Charles')
+    assert value == 'Charles'
