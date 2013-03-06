@@ -1,9 +1,14 @@
 from django.core.urlresolvers import reverse
-from django.test.client import Client
 
-def get_response(view_name):
+def get_response(view_name, client):
     '''
-     Returns a response object that can be used to test if the correct template is used
+     Returns a response object for a named view uses Django's Test Client either through Django TestCase
+     or client fixture from pytest_django
     '''
-    return Client().get(reverse(view_name))
+    return client.get(reverse(view_name))
 
+def get_status_code(view_name, client):
+    '''
+     Convenience function to return just the status code of the response object from get_response
+    '''
+    return get_response(view_name, client).status_code
