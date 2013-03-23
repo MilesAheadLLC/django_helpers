@@ -2,6 +2,7 @@ import pytest
 from os import environ
 from selenium import webdriver
 from django.core import mail
+from django.core.management import call_command
 
 from django.conf import settings
 
@@ -43,3 +44,10 @@ def email_mem_backend(request):
     request.addfinalizer(lambda *args: backend.close())
 
     return backend
+
+@pytest.fixture(scope='session')
+def south_migrate(request):
+    '''
+     Runs the South Migrations
+    '''
+    call_command('migrate')
