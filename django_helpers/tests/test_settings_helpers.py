@@ -1,3 +1,5 @@
+import pytest
+
 from django_helpers.helpers.settings import set_default
 
 def test_set_default_returns_value_when_value_exists():
@@ -6,7 +8,7 @@ def test_set_default_returns_value_when_value_exists():
 
 def test_set_default_returns_the_default_value_when_value_is_empty_string():
     value = set_default("", 'Charles')
-    assert value =='Charles'
+    assert value == 'Charles'
 
 def test_set_default_returns_the_default_value_when_value_is_none():
     value = set_default(None, 'Charles')
