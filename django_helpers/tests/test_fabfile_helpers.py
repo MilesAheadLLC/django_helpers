@@ -3,9 +3,9 @@ import types
 
 import pytest
 
+from django_helpers.helpers.fabfile import taskhelp, dev_test_only
 from django_helpers.test_fixtures import fake_fn
 
-from django_helpers.helpers.fabfile import taskhelp, dev_test_only
 
 def test_get_docstring_for_function_in_fabfile():
     """

@@ -50,8 +50,6 @@ def dev_test_only(fn):
 
     settings_mod = os.environ.get('DJANGO_SETTINGS_MODULE')
 
-    print settings_mod
-
     if 'settings.dev'in settings_mod or 'settings.test' in settings_mod:
         fn()
         return fn
@@ -68,3 +66,4 @@ def update_master(path):
     with lcd(path):
         local('git checkout master')
         local('git pull origin master')
+
