@@ -1,6 +1,6 @@
 import os
 import importlib
-from fabric.api import task, local, lcd
+from fabric.api import task, local, lcd, env
 
 """
     Provides helpers for projects using fabric
@@ -47,17 +47,16 @@ def dev_test_only(fn):
     """
      Helper function to test if function is being called in the dev or test environment
     """
-
-    settings_mod = os.environ.get('DJANGO_SETTINGS_MODULE')
-
-    if 'settings.dev'in settings_mod or 'settings.test' in settings_mod:
-        fn()
-        return fn
-    else:
-        msg = 'This task only runs on the development and test environments. Believe me you don\'t want to run this in production.'
-        print msg
-        return msg
-
+    def wrapper(*args):
+        settings_mod = os.environ['DJANGO_SETTINGS_MODULE']
+        if 'settings.dev' in settings_mod or 'settings.test' in settings_mod:
+            fn(*args)
+            return fn
+        else:
+            msg = 'This task only runs on the development and test environments. Believe me you don\'t want to run this in production.'
+            print msg
+            return msg
+    return wrapper
 
 def update_master(path):
     """
