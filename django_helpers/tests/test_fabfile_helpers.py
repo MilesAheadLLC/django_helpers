@@ -6,7 +6,7 @@ import pytest
 from fabric.api import env
 
 from django_helpers.helpers.fabfile import taskhelp, dev_test_only
-from django_helpers.test_fixtures import fake_fn, fake_fn2, fake_fn3
+from django_helpers.test_fixtures import fake_fn
 
 
 def handle_settings(fn):
@@ -60,7 +60,6 @@ def test_dev_test_only_does_not_run_it_env_is_not_dev_or_test():
     """
      Test that dev test only will not run for anything other than dev or test
     """
-
     os.environ['DJANGO_SETTINGS_MODULE'] = 'rapidresearchregistry.settings.wrong'
     result = dev_test_only(fake_fn)
     assert result() == "This task only runs on the development and test environments. Believe me you don\'t want to run this in production."

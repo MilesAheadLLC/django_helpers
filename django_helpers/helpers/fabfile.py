@@ -10,6 +10,33 @@ from fabric.api import task, local, lcd, env
 """
 
 
+def runtest(test_location, env_var=None):
+    '''
+     Runs all project tests from a specific location
+    '''
+
+    if env_var:
+        pytest_command = '{env} py.test {location}'.format(env=env_var, location=test_location)
+    else:
+        pytest_command = 'py.test {location}'.format(location=test_location)
+    # Use environment variables from shell to test allow test to be run in production without the dbpool
+    local(pytest_command)
+
+def dev_test_only(fn):
+    """
+     Helper function to test if function is being called in the dev or test environment
+    """
+    def wrapper(*args):
+        settings_mod = os.environ['DJANGO_SETTINGS_MODULE']
+        if 'settings.dev' in settings_mod or 'settings.test' in settings_mod:
+            fn(*args)
+            return fn
+        else:
+            msg = 'This task only runs on the development and test environments. Believe me you don\'t want to run this in production.'
+            print msg
+            return msg
+    return wrapper
+
 @task()
 def taskhelp(full_function_name, base_module_name='fabfile'):
     """
@@ -41,22 +68,6 @@ def taskhelp(full_function_name, base_module_name='fabfile'):
     print function.__doc__
 
     return function.__doc__
-
-
-def dev_test_only(fn):
-    """
-     Helper function to test if function is being called in the dev or test environment
-    """
-    def wrapper(*args):
-        settings_mod = os.environ['DJANGO_SETTINGS_MODULE']
-        if 'settings.dev' in settings_mod or 'settings.test' in settings_mod:
-            fn(*args)
-            return fn
-        else:
-            msg = 'This task only runs on the development and test environments. Believe me you don\'t want to run this in production.'
-            print msg
-            return msg
-    return wrapper
 
 def update_master(path):
     """
