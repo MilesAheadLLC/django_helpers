@@ -5,7 +5,8 @@ import pytest
 
 from fabric.api import env
 
-from django_helpers.helpers.fabfile import taskhelp, dev_test_only
+from django_helpers.helpers.fabfile import *
+from django_helpers.fabfile.build import DJANGO_HELPERS_BASE, DJANGO_HELPERS_TEST_LOCATION
 from django_helpers.test_fixtures import fake_fn
 
 
@@ -64,5 +65,30 @@ def test_dev_test_only_does_not_run_it_env_is_not_dev_or_test():
     result = dev_test_only(fake_fn)
     assert result() == "This task only runs on the development and test environments. Believe me you don\'t want to run this in production."
 
+def test_mod_test_runs_tests_if_module_exists():
+    """
+     Test that mod_test runs when module exists
+    """
+    result = mod_test(os.path.join(DJANGO_HELPERS_BASE, "test_fixtures"), "fabfile")
+    assert result is None
 
+def test_mod_test_returns_string_if_module_does_not_exist():
+    """
+     Test that mod_test doesn't run when module exists
+    """
+    result = mod_test(os.path.join(DJANGO_HELPERS_BASE, "test_fixtures"), "wrong")
+    assert result == "The tests at {path} do not appear to exist.".format(path=os.path.join(DJANGO_HELPERS_BASE, "test_fixtures", "wrong"))
 
+def test_mod_test_runs_when_module_is_not_in_a_package():
+    """
+     Test that mod_test runs if module passed in not a package
+    """
+    result = mod_test(os.path.join(DJANGO_HELPERS_BASE, "test_fixtures", "fabfile"), "deploy")
+    assert result is None
+
+def test_mod_test_runs_when_module_is_in_a_package():
+    """
+     Test that mod_test runs if module passed in not a package
+    """
+    result = mod_test(os.path.join(DJANGO_HELPERS_BASE, "test_fixtures"), "fabfile")
+    assert result is None

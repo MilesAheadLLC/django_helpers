@@ -1,5 +1,6 @@
 import os
 import importlib
+
 from fabric.api import task, local, lcd, env
 
 """
@@ -57,17 +58,33 @@ def taskhelp(full_function_name, base_module_name='fabfile'):
         module = importlib.import_module(module_name)
         function_name = name_split[0]
     else:
-        #if more than 1 item the add the first item in the the name split to the base_module_name and then import it
+        #if more than 1 item then add the first item in the the name split to the base_module_name and then import it
         module_name = base_module_name + "." + name_split[0]
         module = importlib.import_module(module_name)
         function_name = name_split[1]
 
-    # get a reference to the function be looking up the name of the function in the module
+    # get a reference to the function by looking up the name of the function in the module
     function = getattr(module, function_name)
 
     print function.__doc__
 
     return function.__doc__
+
+
+def mod_test(test_path, module_name):
+    """
+     Takes in a path and module and concatenates the two and runs their tests. The path is intended to be the tests directory for a django app
+    """
+    test_mod_path = os.path.join(test_path, module_name)
+    if os.path.exists(test_mod_path):
+        runtest(test_mod_path)
+    elif os.path.exists(test_mod_path + '.py'):
+        runtest((test_mod_path + '.py'))
+    else:
+        msg = "The tests at {path} do not appear to exist.".format(path=test_mod_path)
+        print msg
+        return msg
+
 
 def update_master(path):
     """
