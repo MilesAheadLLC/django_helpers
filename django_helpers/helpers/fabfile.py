@@ -1,7 +1,7 @@
 import os
 import importlib
 
-from fabric.api import task, local, lcd, env
+from fabric.api import task, local, lcd
 
 """
     Provides helpers for projects using fabric
@@ -11,16 +11,17 @@ from fabric.api import task, local, lcd, env
 """
 
 
-def runtest(test_location, env_var=None):
+def runtest(test_location, env_var=None, test_cmd='py.test'):
     '''
      Runs all project tests from a specific location
     '''
 
     if env_var:
-        pytest_command = '{env} py.test {location}'.format(env=env_var, location=test_location)
+        # Use environment variables from shell to test allow test to be run in production e.g. without the dbpool
+        pytest_command = '{env} {cmd} {location}'.format(env=env_var, location=test_location, cmd=test_cmd)
     else:
-        pytest_command = 'py.test {location}'.format(location=test_location)
-    # Use environment variables from shell to test allow test to be run in production without the dbpool
+        pytest_command = '{cmd} {location}'.format(location=test_location, cmd=test_cmd)
+
     local(pytest_command)
 
 def dev_test_only(fn):
@@ -73,7 +74,8 @@ def taskhelp(full_function_name, base_module_name='fabfile'):
 
 def mod_test(test_path, module_name):
     """
-     Takes in a path and module and concatenates the two and runs their tests. The path is intended to be the tests directory for a django app
+     Takes in a path and module and concatenates the two and runs their tests. The path is intended to be the
+     tests directory for a django app
     """
     test_mod_path = os.path.join(test_path, module_name)
     if os.path.exists(test_mod_path):
