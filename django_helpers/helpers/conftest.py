@@ -3,9 +3,6 @@ from os import environ
 from selenium import webdriver
 from django.core import mail
 
-
-from django.conf import settings
-
 browsers = {
     'firefox': webdriver.Firefox,
     }
@@ -25,7 +22,6 @@ def web_browser(request):
     request.addfinalizer(lambda *args: browser.quit())
 
     return browser
-
 
 @pytest.fixture(scope='session')
 def email_mem_backend(request):
