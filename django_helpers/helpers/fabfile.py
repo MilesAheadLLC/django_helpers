@@ -94,5 +94,6 @@ def update_master(path):
     """
     with lcd(path):
         local('git checkout master')
+        local('git fetch')
         local('git pull origin master')
 
