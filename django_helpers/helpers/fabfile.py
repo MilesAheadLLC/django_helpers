@@ -72,16 +72,16 @@ def taskhelp(full_function_name, base_module_name='fabfile'):
     return function.__doc__
 
 
-def mod_test(test_path, module_name):
+def mod_test(test_path, module_name, test_cmd='py.test'):
     """
      Takes in a path and module and concatenates the two and runs their tests. The path is intended to be the
      tests directory for a django app
     """
     test_mod_path = os.path.join(test_path, module_name)
     if os.path.exists(test_mod_path):
-        runtest(test_mod_path)
+        runtest(test_mod_path, test_cmd=test_cmd)
     elif os.path.exists(test_mod_path + '.py'):
-        runtest((test_mod_path + '.py'))
+        runtest((test_mod_path + '.py'), test_cmd=test_cmd)
     else:
         msg = "The tests at {path} do not appear to exist.".format(path=test_mod_path)
         print msg
